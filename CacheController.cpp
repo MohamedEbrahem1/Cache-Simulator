@@ -31,50 +31,45 @@ unsigned int CacheController::getTag(unsigned int address)
     return (address >> (indexBits + offsetBits));
 }
 
-void CacheController::processMemoryAccess(const string& filename) 
+bool CacheController::processMemoryAddress(unsigned int memoryAddress) 
 {
-    ifstream memoryAccessFile(filename);
-    if (!memoryAccessFile.is_open()) 
+    ++numberOfAccesses;
+    bool result;
+    unsigned int index = getIndex(memoryAddress);
+    unsigned int tag = getTag(memoryAddress);
+
+    if (cacheMemory[index].isValid && cacheMemory[index].tagValue == tag) 
     {
-        cerr << "Error opening file: " << filename << endl;
-        return;
+        ++cacheHits;
+        cout << "HIT! Data found in cache\n";
+        result = true;
+    } 
+    else 
+    {
+        ++cacheMisses;
+        cout << "MISS! Data not found in cache\n";
+        cacheMemory[index].isValid = true;
+        cacheMemory[index].tagValue = tag;
+        result = false;
     }
 
-    unsigned int memoryAddress;
-    while (memoryAccessFile >> memoryAddress) 
+    // Display cache state after each access
+    for (unsigned int i = 0; i < linesCount; ++i) 
     {
-        ++numberOfAccesses;
-        unsigned int index = getIndex(memoryAddress);
-        unsigned int tag = getTag(memoryAddress);
-
-        if (cacheMemory[index].isValid && cacheMemory[index].tagValue == tag) 
-        {
-            ++cacheHits;
-        } 
-        else 
-        {
-            ++cacheMisses;
-            cacheMemory[index].isValid = true;
-            cacheMemory[index].tagValue = tag;
-        }
-
-        // Display cache state after each access
-        cout << "Cache Status (After Access " << numberOfAccesses << "):\n";
-        for (unsigned int i = 0; i < linesCount; ++i) 
-        {
-            cout << "Line " << i << ": Valid = " << cacheMemory[i].isValid << " Tag = " << cacheMemory[i].tagValue << endl;
-        }
-
-        double hitRate = double(cacheHits) / numberOfAccesses;
-        double missRate = double(cacheMisses) / numberOfAccesses;
-        double amat = accessTime + (missRate * 100);
-
-        cout << "Total number of accesses: " << numberOfAccesses << endl;
-        cout << "Hit rate: " << fixed << setprecision(2) << hitRate << endl;
-        cout << "Miss rate: " << fixed << setprecision(2) << missRate << endl;
-        cout << "Average Memory Access Time (AMAT): " << fixed << setprecision(2) << amat << " cycles" << endl;
-        cout << endl;
+        cout << "Line " << i << ": Valid = " << cacheMemory[i].isValid << " Tag = " << cacheMemory[i].tagValue << endl;
     }
 
-    memoryAccessFile.close();
+    double hitRate = double(cacheHits) / numberOfAccesses;
+    double missRate = double(cacheMisses) / numberOfAccesses;
+
+    cout << "Total number of accesses of this cache level: " << numberOfAccesses << endl;
+    cout << "Local Hit rate: " << fixed << setprecision(2) << hitRate << endl;
+    cout << "Local Miss rate: " << fixed << setprecision(2) << missRate << endl;
+    cout << endl;
+    return result;
+}
+
+unsigned int CacheController::getTime()
+{
+    return accessTime;
 }

@@ -38,7 +38,8 @@ private:
 
 public:
     CacheController(unsigned int cacheSize, unsigned int blockSize, unsigned int accessTime);
-    void processMemoryAccess(const string& filename);
+    bool processMemoryAddress(unsigned int);
+    unsigned int getTime();
 };
 
 #endif
