@@ -8,6 +8,8 @@ int main()
     cout << "Enter the number of cache levels: ";
     cin >> levels;
     while (levels < 1) {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(),'\n');
         cout << "Error! the number of levels must be positive\n";
         cout << "Enter the number of cache levels: ";
         cin >> levels;
@@ -20,6 +22,8 @@ int main()
         cin >> cacheSize;
         while (ceil(log2(cacheSize)) != floor(log2(cacheSize)))
         {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
             cout << "Error! Cache size must be a power of 2" << endl;
             cout << "Enter the size of the cache in bytes: ";
             cin >> cacheSize;
@@ -29,6 +33,8 @@ int main()
         cin >> blockSize;
         while (ceil(log2(blockSize)) != floor(log2(blockSize)))
         {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
             cout << "Error! Block size must be a power of 2" << endl;
             cout << "Enter the block size in bytes: ";
             cin >> blockSize;
@@ -38,6 +44,8 @@ int main()
         cin >> accessTime;
         while (accessTime < 1 || accessTime > 10)
         {
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
             cout << "Error! Number of access cycles must be between 1 and 10" << endl;
             cout << "Enter the number of access cycles needed to access the cache (An integer from 1 to 10): ";
             cin >> accessTime;
