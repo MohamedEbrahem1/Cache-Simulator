@@ -1,0 +1,5 @@
+December 11th, 8:00 AM:
+Refactored The existent code to make it more readable
+Fixed several bugs related to the handling input exceptions and calculating the average time
+Implemented the CacheMater Class along with multi-level caches
+Wrote the first three sections of the report: Description, Assumptions, and Known Bugs
